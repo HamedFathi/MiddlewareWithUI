@@ -113,23 +113,18 @@ namespace MiddlewareWithUI
             var status = IsInEmbeddedResource(location, out resourceName);
             if (!status) return;
 
-            var ext = GetExtension(resourceName);
+            var ext = GetExtension(resourceName, true);
             response.StatusCode = 200;
 
-            var images = new[] { "png", "jpg", "jpeg", "gif" };
-            var text = new[] { "js", "txt", "html" };
+            var images = new[] { ".png", ".jpg", ".jpeg", "gif", "ico" };
 
             await using var stream = typeof(CustomUIMiddleware).GetTypeInfo().Assembly.GetManifestResourceStream(resourceName);
+            response.ContentType = $"{MimeTypeLookup.GetMimeType(ext)};charset=utf-8";
 
             if (images.Contains(ext))
             {
-                response.ContentType = $"image/{ext};charset=utf-8";
                 await response.BodyWriter.WriteAsync(ToByteArray(stream));
                 return;
-            }
-            else
-            {
-                response.ContentType = $"text/{ext};charset=utf-8";
             }
 
             var htmlBuilder = new StringBuilder(await new StreamReader(stream).ReadToEndAsync());
