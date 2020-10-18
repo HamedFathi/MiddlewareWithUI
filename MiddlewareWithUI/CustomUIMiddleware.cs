@@ -116,7 +116,10 @@ namespace MiddlewareWithUI
             var ext = GetExtension(resourceName, true);
             response.StatusCode = 200;
 
-            var images = new[] { ".png", ".jpg", ".jpeg", "gif", "ico" };
+            var images = new[] {
+                ".apng", ".bmp", ".gif", ".ico", ".cur", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp",
+                ".png", ".svg", ".tif", ".tiff", ".webp"
+            };
 
             await using var stream = typeof(CustomUIMiddleware).GetTypeInfo().Assembly.GetManifestResourceStream(resourceName);
             response.ContentType = $"{MimeTypeLookup.GetMimeType(ext)};charset=utf-8";
